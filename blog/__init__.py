@@ -24,4 +24,7 @@ def app():
 
     app = FastAPI(middleware=middleware, routes=routes)
 
+    from .routers import home
+    app.include_router(home.router)
+
     return app

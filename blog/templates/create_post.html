@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="form-group">
+        <a href="/">Return to blog</a>
+        <form class="d-flex flex-column" action="">
+            <input class="form-control my-1" name="author_id" type="input" placeholder="author_id (get from request.session)">
+            <input class="form-control my-1" name="title" type="input" placeholder="Post title">
+            <textarea class="form-control my-1" id="" name="content" cols="30" rows="10"></textarea>
+            <button class="btn btn-primary my-1" action="submit">Create post</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

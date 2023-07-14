@@ -1,7 +1,6 @@
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import Row, text
-import asyncio
 
 import os
 
@@ -12,7 +11,7 @@ from .. import schema
 ENGINE = create_async_engine(os.environ["DATABASE_URL"])
 
 
-async def get_db_session() -> async_sessionmaker[AsyncSession]:
+async def get_db_sessionmaker() -> async_sessionmaker[AsyncSession]:
     return async_sessionmaker(ENGINE, expire_on_commit=False)
 
 
@@ -24,7 +23,7 @@ async def create_tables() -> None:
 async def fetch_user(
         async_session: async_sessionmaker[AsyncSession], 
         selector: int | str
-    ) -> models.User:
+    ) -> Row:
     """Fetch a user by ID or email.
     
     Args:
@@ -43,7 +42,7 @@ async def fetch_user(
 
     async with async_session() as session:
         params = {"selector": selector}
-        result, _ = await session.execute(stmt, params)
+        result = await session.execute(stmt, params)
         return result.one()
 
 
@@ -66,7 +65,22 @@ async def fetch_post(
     )
     async with async_session() as session:
         params = {"selector": selector}
-        result, _ = await session.execute(stmt, params)
+        result = await session.execute(stmt, params)
+        return result.one()
+
+
+async def fetch_blog_config(async_session: async_sessionmaker[AsyncSession]) -> Row:
+    """Fetch the blog's config table row
+    
+    Args:
+        async_session (AsyncSession): SQLAlchemy async session
+
+    Returns:
+        BlogConfig
+    """
+    stmt = text("SELECT * FROM blog_config WHERE blog_config_id = 1")
+    async with async_session() as session:
+        result = await session.execute(stmt)
         return result.one()
 
 
@@ -200,5 +214,80 @@ async def update_post(
                 "content": new_post.content,
                 "author_id": new_post.author_id,
                 "post_id": post_id
+            }
+            await session.execute(stmt, params)
+
+
+async def update_blog_config(
+        async_session: async_sessionmaker[AsyncSession],
+        blog_config: schema.BlogConfig
+    ) -> None:
+    """Create a new post
+    
+    Args:
+        async_session (AsyncSession): SQLAlchemy async session
+        blog_config (BlogConfig): New configuration for the blog
+    """
+    stmt = text(
+        "UPDATE blog_config SET"
+        "    (banner_image_url = :banner_image_url, homepage_heading = :homepage_heading, homepage_subheading = :homepage_subheading) "
+        "WHERE blog_config_id = 1"
+    )
+    async with async_session() as session:
+        async with session.begin():
+            params = {
+                "banner_image_url": blog_config.banner_image_url,
+                "homepage_heading": blog_config.homepage_heading,
+                "homepage_subheading": blog_config.homepage_subheading,
+            }
+            await session.execute(stmt, params)
+
+
+async def create_author(
+        async_session: async_sessionmaker[AsyncSession],
+        author: schema.Author
+    ) -> None:
+    """Create a new author
+    
+    Args:
+        async_session (AsyncSession): SQLAlchemy async session
+        author (schema.Author): Author for blog as defined in schema
+    """
+    stmt = text(
+        "INSERT INTO authors ("
+        "   name, "
+        "   email, "
+        "   organization, "
+        "   bio, "
+        "   linkedin_url, "
+        "   twitter_url, "
+        "   facebook_url, "
+        "   instagram_url, "
+        "   tumblr_url "
+        ") "
+        "VALUES ("
+        "   :name, "
+        "   :email, "
+        "   :organization, "
+        "   :bio, "
+        "   :linkedin_url, "
+        "   :twitter_url, "
+        "   :facebook_url, "
+        "   :instagram_url, "
+        "   :tumblr_url "
+        ") "
+    )
+    async with async_session() as session:
+        async with session.begin():
+            params =  {
+                "name": author.name,
+                "email": author.email,
+                "organization": author.organization,
+                "bio": author.bio,
+                "linkedin_url": author.linkedin_url,
+                "twitter_url": author.twitter_url,
+                "facebook_url": author.facebook_url,
+                "instagram_url": author.instagram_url,
+                "tumblr_url": author.tumblr_url,
             }
             await session.execute(stmt, params)

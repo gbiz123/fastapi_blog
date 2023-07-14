@@ -42,3 +42,12 @@ class Author(Base):
     facebook_url: Mapped[str]
     instagram_url: Mapped[str]
     tumblr_url: Mapped[str]
+
+
+class BlogConfig(Base):
+    __tablename__ = "blog_config"
+
+    blog_config_id: Mapped[int] = mapped_column(Integer, Identity(), primary_key=True)
+    homepage_heading: Mapped[str]
+    homepage_subheading: Mapped[str]
+    banner_image_url: Mapped[str]
