@@ -27,10 +27,10 @@ class Author(BaseModel):
 
     name: str
     email: str
-    organization: str
     bio: str
-    linkedin_url: str
-    twitter_url: str
-    facebook_url: str
-    instagram_url: str
-    tumblr_url: str
+    organization: str | None
+    linkedin_url: str | None
+    twitter_url: str | None
+    facebook_url: str | None
+    instagram_url: str | None
+    tumblr_url: str | None

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="form-group">
+        <a href="/">Return to blog</a>
+        <form class="d-flex flex-column" action="/create-author" method="POST">
+            <input class="form-control my-1" name="name" type="input" placeholder="Name">
+            <input class="form-control my-1" name="email" type="input" placeholder="Email">
+            <input class="form-control my-1" name="organization" type="input" placeholder="Organization">
+            <input class="form-control my-1" name="bio" type="input" placeholder="Bio">
+            <input class="form-control my-1" name="linkedin_url" type="input" placeholder="Linkedin URL">
+            <input class="form-control my-1" name="facebook_url" type="input" placeholder="Facebook URL">
+            <button class="btn btn-primary my-1" action="submit">Create author</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

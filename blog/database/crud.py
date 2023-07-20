@@ -108,7 +108,7 @@ async def fetch_posts(
     async with async_session() as session:
         params = {"limit": limit, "offset": offset}
         results = await session.execute(stmt, params)
-        return [result for result, _ in results.all()] 
+        return [result for result in results.all()] 
 
 
 async def create_post(

@@ -35,13 +35,13 @@ class Author(Base):
     author_id: Mapped[int] = mapped_column(Integer, Identity(), primary_key=True)
     name: Mapped[str]
     email: Mapped[str]
-    organization: Mapped[str]
     bio: Mapped[str]
-    linkedin_url: Mapped[str]
-    twitter_url: Mapped[str]
-    facebook_url: Mapped[str]
-    instagram_url: Mapped[str]
-    tumblr_url: Mapped[str]
+    organization: Mapped[str] = mapped_column(String)
+    linkedin_url: Mapped[str] = mapped_column(String)
+    twitter_url: Mapped[str] = mapped_column(String)
+    facebook_url: Mapped[str] = mapped_column(String)
+    instagram_url: Mapped[str] = mapped_column(String)
+    tumblr_url: Mapped[str] = mapped_column(String)
 
 
 class BlogConfig(Base):

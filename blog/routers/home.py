@@ -3,6 +3,8 @@ from fastapi.routing import APIRouter
 
 from typing import Annotated
 
+from starlette.responses import RedirectResponse
+
 from ..schema import BlogConfig, Post, Author
 from ..templates import templates
 from .. import database as db
@@ -35,6 +37,7 @@ async def post_creator_page(request: Request):
 
 @router.post("/create-post")
 async def create_post(
+        request: Request,
         author_id: int = Form(gt=0, lt=10e6), 
         content: str = Form(),
         title: str = Form()
@@ -43,28 +46,35 @@ async def create_post(
     post = Post(author_id=author_id, content=content, title=title)
     sessionmaker = await db.get_db_sessionmaker()
     await db.create_post(sessionmaker, post)
+    request.session["message"] = "New post created!"    
+    return RedirectResponse("/", status_code=303)
 
 
 @router.get("/create-author")
 async def author_creator_page(request: Request):
     """Show the author creator page"""
     context = {"request": request}
-    return templates.TemplateResponse("create_post.html", context)
+    return templates.TemplateResponse("create_author.html", context)
 
 
 @router.post("/create-author")
 async def create_author(
-        name: str = Form(),
-        email: str = Form(),
-        organization: str = Form(),
-        bio: str = Form(),
-        linkedin_url: str = Form(),
-        twitter_url: str = Form(),
-        facebook_url: str = Form(),
-        instagram_url: str = Form(),
-        tumblr_url: str = Form()
+        request: Request,
+        name: str = Form(""),
+        email: str = Form(""),
+        bio: str = Form(""),
+        organization: str | None = Form(None),
+        linkedin_url: str | None = Form(None),
+        twitter_url: str | None = Form(None),
+        facebook_url: str | None = Form(None),
+        instagram_url: str | None = Form(None),
+        tumblr_url: str | None = Form(None)
     ):
     """Create a new author"""
+    if not all([name, email, bio]):
+        request.session["message"] = "Name, email, and bio are required." 
+        return RedirectResponse("/create-author", status_code=303)
+
     author = Author(
         name=name,
         email=email,
@@ -78,6 +88,8 @@ async def create_author(
     )
     sessionmaker = await db.get_db_sessionmaker()
     await db.create_author(sessionmaker, author)
+    request.session["message"] = f"Author {name} created!" 
+    return RedirectResponse("/", status_code=303)
 
 
 @router.get("/update-post/{post_no}")
