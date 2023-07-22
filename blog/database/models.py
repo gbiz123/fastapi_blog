@@ -17,6 +17,7 @@ class User(Base):
     email: Mapped[str] = mapped_column(String, nullable=False)
     password: Mapped[str] = mapped_column(String, nullable=False)
     is_admin: Mapped[bool]
+    is_author: Mapped[bool]
 
 
 class Post(Base):
@@ -48,6 +49,7 @@ class BlogConfig(Base):
     __tablename__ = "blog_config"
 
     blog_config_id: Mapped[int] = mapped_column(Integer, Identity(), primary_key=True)
+    navbar_title: Mapped[str]
     homepage_heading: Mapped[str]
     homepage_subheading: Mapped[str]
     banner_image_url: Mapped[str]

@@ -27,4 +27,7 @@ def app():
     from .routers import home
     app.include_router(home.router)
 
+    from .routers import auth
+    app.include_router(auth.router)
+
     return app

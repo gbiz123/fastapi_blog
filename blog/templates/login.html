@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <form action={{ request.url_for('login_user') }} method="POST">
+        <h2 class="text-center">Enter your login details</h2>
+        <input class="form-control my-3" type="email" placeholder="email" name="email">
+        <input class="form-control my-3" type="password" placeholder="password" name="password">
+        <button class="btn btn-primary my-3" action="submit">Log in</button>
+    </form>
+</div>
+{% endblock %}

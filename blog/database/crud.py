@@ -23,7 +23,7 @@ async def create_tables() -> None:
 async def fetch_user(
         async_session: async_sessionmaker[AsyncSession], 
         selector: int | str
-    ) -> Row:
+    ) -> Row | None:
     """Fetch a user by ID or email.
     
     Args:
@@ -43,7 +43,7 @@ async def fetch_user(
     async with async_session() as session:
         params = {"selector": selector}
         result = await session.execute(stmt, params)
-        return result.one()
+        return result.one_or_none()
 
 
 async def fetch_post(
