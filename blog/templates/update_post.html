@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <h1>Edit a post</h1>
+    <a href="/">Return to blog</a>
+    <div class="form-group py-3">
+        <form class="d-flex flex-column" action="/admin/update-post?post_id={{ post.post_id }}" method="POST">
+            <input class="form-control my-1" name="title" type="input" placeholder={{ post.title }} value={{ post.title }}>
+            <input class="form-control my-1" name="description" type="input" placeholder={{ post.description }} value={{ post.description }}>
+            <input class="form-control my-1" name="image_url" type="input" placeholder={{ post.image_url }} value={{ post.image_url }}>
+            <textarea class="form-control my-1" id="" name="content" cols="30" rows="10">
+                {{ post.content }}
+            </textarea>
+            <button class="btn btn-primary my-1" action="submit">Update post</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -3,9 +3,11 @@ from pydantic import BaseModel
 
 class Post(BaseModel):
     """A blog post"""
-    author_id: int
+    user_id: int
+    image_url: str
     content: str
     title: str
+    description: str
 
 
 class User(BaseModel):
@@ -13,6 +15,8 @@ class User(BaseModel):
     email: str
     password: str
     is_admin: bool
+    bio: str
+    name: str
 
 
 class BlogConfig(BaseModel):
@@ -20,17 +24,3 @@ class BlogConfig(BaseModel):
     banner_image_url: str
     homepage_heading: str
     homepage_subheading: str
-
-
-class Author(BaseModel):
-    """Author"""
-
-    name: str
-    email: str
-    bio: str
-    organization: str | None
-    linkedin_url: str | None
-    twitter_url: str | None
-    facebook_url: str | None
-    instagram_url: str | None
-    tumblr_url: str | None

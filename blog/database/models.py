@@ -18,6 +18,10 @@ class User(Base):
     password: Mapped[str] = mapped_column(String, nullable=False)
     is_admin: Mapped[bool]
     is_author: Mapped[bool]
+    name: Mapped[str]
+    bio: Mapped[str]
+    organization: Mapped[str]
+    social_media_link: Mapped[str]
 
 
 class Post(Base):
@@ -26,23 +30,10 @@ class Post(Base):
     post_id: Mapped[int] = mapped_column(Integer, Identity(), primary_key=True)
     date_created: Mapped[DateTime] = mapped_column(DateTime, server_default=now())
     title: Mapped[str]
+    description: Mapped[str]
     content: Mapped[str]
-    author_id: Mapped[str] = mapped_column(Integer, ForeignKey("authors.author_id"))
-
-
-class Author(Base):
-    __tablename__ = "authors"
-
-    author_id: Mapped[int] = mapped_column(Integer, Identity(), primary_key=True)
-    name: Mapped[str]
-    email: Mapped[str]
-    bio: Mapped[str]
-    organization: Mapped[str] = mapped_column(String)
-    linkedin_url: Mapped[str] = mapped_column(String)
-    twitter_url: Mapped[str] = mapped_column(String)
-    facebook_url: Mapped[str] = mapped_column(String)
-    instagram_url: Mapped[str] = mapped_column(String)
-    tumblr_url: Mapped[str] = mapped_column(String)
+    created_by_user_id: Mapped[str]
+    image_url: Mapped[str] = mapped_column(String, nullable=True)
 
 
 class BlogConfig(Base):

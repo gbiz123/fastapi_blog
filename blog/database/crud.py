@@ -49,24 +49,25 @@ async def fetch_user(
 async def fetch_post(
         async_session: async_sessionmaker[AsyncSession], 
         selector: int
-    ) -> Row:
+    ) -> Row | None:
     """Fetch a post with author by post ID.
     
     Args:
+        async_session (async_sessionmaker[AsyncSession]): SQLAlchemy async sessionmaker
         selector (int): ID to fetch a post by
-        async_session (AsyncSession): SQLAlchemy async session
 
     Returns:
         Post
     """
     stmt = text(
-        "SELECT * FROM posts WHERE post_id = :selector "
-        "JOIN authors ON posts.author_id = authors.author_id"
+        "SELECT * FROM posts "
+        "JOIN users ON posts.created_by_user_id = users.user_id "
+        "WHERE post_id = :selector"
     )
     async with async_session() as session:
         params = {"selector": selector}
         result = await session.execute(stmt, params)
-        return result.one()
+        return result.one_or_none()
 
 
 async def fetch_blog_config(async_session: async_sessionmaker[AsyncSession]) -> Row:
@@ -100,8 +101,8 @@ async def fetch_posts(
     """
     stmt = text(
         "SELECT * FROM posts "
-        "JOIN authors ON posts.author_id = authors.author_id "
-        "ORDER BY date_created ASC "
+        "JOIN users ON posts.created_by_user_id = users.user_id "
+        "ORDER BY posts.date_created DESC "
         "LIMIT :limit "
         "OFFSET :offset"
     )
@@ -123,16 +124,18 @@ async def create_post(
     """
     stmt = text(
         "INSERT INTO posts "
-        "    (title, content, author_id) "
+        "    (title, content, created_by_user_id, image_url) "
         "VALUES "
-        "   (:title, :content, :author_id)"
+        "   (:title, :content, :created_by_user_id, :image_url)"
     )
     async with async_session() as session:
         async with session.begin():
             params = {
                 "title": post.title,
+                "image_url": post.image_url,
                 "content": post.content,
-                "author_id": post.author_id
+                "description": post.description,
+                "created_by_user_id": post.user_id
             }
             await session.execute(stmt, params)
 
@@ -149,16 +152,19 @@ async def create_user(
     """
     stmt = text(
         "INSERT INTO users "
-        "    (email, password, is_admin) "
+        "    (email, password, is_admin, name, bio) "
         "VALUES "
-        "   (:email, :password, :is_admin)"
+        "   (:email, :password, :is_admin, :name, :bio)"
     )
     async with async_session() as session:
         async with session.begin():
             params = {
                 "email": user.email,
                 "password": user.password,
-                "is_admin": user.is_admin
+                "is_admin": user.is_admin,
+                "name": user.name,
+                "password": user.password,
+                "bio": user.bio
             }
             await session.execute(stmt, params)
 
@@ -204,7 +210,8 @@ async def update_post(
     """
     stmt = text(
         "UPDATE posts SET"
-        "    (title = :title, content = :content, author_id = :author_id) "
+        "    (title, content, image_url, description) ="
+        "    (:title, :content, :image_url, :description) "
         "WHERE post_id = :post_id"
     )
     async with async_session() as session:
@@ -212,8 +219,10 @@ async def update_post(
             params = {
                 "title": new_post.title,
                 "content": new_post.content,
-                "author_id": new_post.author_id,
-                "post_id": post_id
+                "image_url": new_post.image_url,
+                "description": new_post.description,
+                "created_by_user_id": new_post.user_id,
+                "post_id": post_id,
             }
             await session.execute(stmt, params)
 
@@ -239,55 +248,5 @@ async def update_blog_config(
                 "banner_image_url": blog_config.banner_image_url,
                 "homepage_heading": blog_config.homepage_heading,
                 "homepage_subheading": blog_config.homepage_subheading,
-            }
-            await session.execute(stmt, params)
-
-
-async def create_author(
-        async_session: async_sessionmaker[AsyncSession],
-        author: schema.Author
-    ) -> None:
-    """Create a new author
-    
-    Args:
-        async_session (AsyncSession): SQLAlchemy async session
-        author (schema.Author): Author for blog as defined in schema
-    """
-    stmt = text(
-        "INSERT INTO authors ("
-        "   name, "
-        "   email, "
-        "   organization, "
-        "   bio, "
-        "   linkedin_url, "
-        "   twitter_url, "
-        "   facebook_url, "
-        "   instagram_url, "
-        "   tumblr_url "
-        ") "
-        "VALUES ("
-        "   :name, "
-        "   :email, "
-        "   :organization, "
-        "   :bio, "
-        "   :linkedin_url, "
-        "   :twitter_url, "
-        "   :facebook_url, "
-        "   :instagram_url, "
-        "   :tumblr_url "
-        ") "
-    )
-    async with async_session() as session:
-        async with session.begin():
-            params =  {
-                "name": author.name,
-                "email": author.email,
-                "organization": author.organization,
-                "bio": author.bio,
-                "linkedin_url": author.linkedin_url,
-                "twitter_url": author.twitter_url,
-                "facebook_url": author.facebook_url,
-                "instagram_url": author.instagram_url,
-                "tumblr_url": author.tumblr_url,
             }
             await session.execute(stmt, params)

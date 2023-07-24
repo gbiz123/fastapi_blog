@@ -30,4 +30,7 @@ def app():
     from .routers import auth
     app.include_router(auth.router)
 
+    from .routers import admin
+    app.include_router(admin.router)
+
     return app

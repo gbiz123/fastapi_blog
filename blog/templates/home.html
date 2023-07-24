@@ -7,13 +7,17 @@
     <img class="img-fluid" src={{ blog_config.banner_image_url }} alt="">
 </div>
 <div class="homepage-posts container d-flex">
+    <div class="container">
     {% for post in posts %}
-    <div class="row card">
-        <h2>{{ post.title }}</h2>
-        <p>{{ post.description }}</p>
-        <p>{{ post.name }}</p>
-        <p>{{ post.date_created }}</p>
-    </div>
+        <div class="row card my-2">
+            <a href={{ request.url_for('blog_post_page', post_no=post.post_id) }}><h2>{{ post.title }}</h2></a>
+            <p>{{ post.description }}</p>
+            <p>
+                {{ post.name }}</br>
+                {{ post.date_created|datetime_format }}
+            </p>
+        </div>
     {% endfor %}
+    </div>
 </div>
 {% endblock %}

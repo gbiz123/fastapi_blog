@@ -2,11 +2,13 @@
 
 {% block content %}
 <div class="container py-5">
-    <div class="form-group">
-        <a href="/">Return to blog</a>
+    <h1>Make a post</h1>
+    <a href="/">Return to blog</a>
+    <div class="form-group py-3">
         <form class="d-flex flex-column" action="create-post" method="POST">
-            <input class="form-control my-1" name="author_id" type="input" placeholder="author_id (get from request.session)">
             <input class="form-control my-1" name="title" type="input" placeholder="Post title">
+            <input class="form-control my-1" name="description" type="input" placeholder="Brief description">
+            <input class="form-control my-1" name="image_url" type="input" placeholder="Banner image URL">
             <textarea class="form-control my-1" id="" name="content" cols="30" rows="10"></textarea>
             <button class="btn btn-primary my-1" action="submit">Create post</button>
         </form>

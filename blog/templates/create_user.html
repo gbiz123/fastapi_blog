@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="form-group">
+        <a href="/">Return to blog</a>
+        <form class="d-flex flex-column" action="/auth/create-user" method="POST">
+            <input class="form-control my-1" name="name" type="input" placeholder="Name">
+            <input class="form-control my-1" name="email" type="input" placeholder="Email">
+            <input class="form-control my-1" name="password" type="input" placeholder="Password">
+            <input class="form-control my-1" name="bio" type="input" placeholder="Bio">
+            <div class="my-3">
+                <input class="form-check-input my-1" id="is_admin" name="is_admin" type="checkbox">
+                <label class="form-check-label" for="is_admin">Grant admin privileges (can create other users)</label>
+            </div>
+            <button class="btn btn-primary my-1" action="submit">Create user</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

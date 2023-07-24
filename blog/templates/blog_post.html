@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="banner container py-5" style="max-width: 960px;">
+    <h1 class="text-center">{{ post.title }}</h1>
+    <p class="text-center">
+        {{ post.name }}</br>
+        {{ post.date_created|datetime_format }}
+        {% if request.session.get("user") %}
+        {% if request.session["user"]["is_admin"] %}
+        <a href={{ request.url_for("update_post_page", post_id=post.post_id) }}>Edit this post</a>
+        {% endif %}
+        {% endif %}
+    </p>
+    <h2 class="text-center">{{ post.description }}</h2>
+    <img class="img-fluid pt-5" src={{ post.image_url }} alt="">
+</div>
+<div class="homepage-posts container d-flex" style="max-width: 960px;">
+    <div class="container">
+        {{ post.content|safe }}
+    </div>
+</div>
+{% endblock %}

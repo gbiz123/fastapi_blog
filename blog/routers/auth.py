@@ -18,6 +18,17 @@ import blog
 router = APIRouter(prefix="/auth")
 
 
+@router.get("/logout")
+async def logout_user(request: Request):
+    if not request.session.get("user"):
+        request.session["message"] = "You are not logged in."
+        return RedirectResponse("/", 303)
+
+    request.session.pop("user")
+    request.session["message"] = "You have been logged out."
+    return RedirectResponse("/", 303)
+
+
 @router.get("/login")
 async def login_page(request: Request):
     """Show the login page"""
@@ -45,38 +56,7 @@ async def login_user(
     if not user or not bcrypt.checkpw(password.encode(), user.password.encode()):
         request.session["message"] = "Invalid email or password."
         return RedirectResponse("/auth/login", 303)
-
+    
+    request.session["user"] = db.row_to_dict(user)
     request.session["message"] = "Welcome to your blog!"
-    return RedirectResponse("/", 303)
-
-
-@router.get("/create-user")
-async def create_user_page(request: Request):
-    """Show the create_user page"""
-    return templates.TemplateResponse("create_user.html", {"request": request})
-
-
-@router.post("/create-user")
-async def create_user(
-        request: Request,
-        email: str = Form(""),
-        password: str = Form(""),
-        is_admin: str = Form("off"),
-        is_author: str = Form("off")
-    ):
-    """Create a new user"""
-    if not request.session.get("user").get("is_admin"):
-        request.session["message"] = "You must be logged in as an admin to create users."
-        return RedirectResponse("/", 303)
-
-    password = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
-    user = schema.User(
-        email=email,
-        password=password,
-        is_admin=True if is_admin == "on" else False,
-        is_author=True if is_author == "on" else False
-    )
-    sessionmaker = await db.get_db_sessionmaker()
-    await db.create_user(sessionmaker, user)
-    request.session["message"] = "New user created"
     return RedirectResponse("/", 303)
