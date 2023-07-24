@@ -1,0 +1,9 @@
+.blog-post > p {
+    font-size: 18px;
+    line-height: 32px;
+}
+
+.blog-post > h2 {
+    padding-bottom: 20px;
+    padding-top: 30px;
+}

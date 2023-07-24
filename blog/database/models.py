@@ -44,3 +44,4 @@ class BlogConfig(Base):
     homepage_heading: Mapped[str]
     homepage_subheading: Mapped[str]
     banner_image_url: Mapped[str]
+    about: Mapped[str]

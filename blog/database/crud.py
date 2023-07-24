@@ -239,7 +239,8 @@ async def update_blog_config(
     """
     stmt = text(
         "UPDATE blog_config SET"
-        "    (banner_image_url = :banner_image_url, homepage_heading = :homepage_heading, homepage_subheading = :homepage_subheading) "
+        "    (banner_image_url, homepage_heading, homepage_subheading, navbar_title, about) = "
+        "    (:banner_image_url, :homepage_heading, :homepage_subheading, :navbar_title, :about) "
         "WHERE blog_config_id = 1"
     )
     async with async_session() as session:
@@ -248,5 +249,7 @@ async def update_blog_config(
                 "banner_image_url": blog_config.banner_image_url,
                 "homepage_heading": blog_config.homepage_heading,
                 "homepage_subheading": blog_config.homepage_subheading,
+                "navbar_title": blog_config.navbar_title,
+                "about": blog_config.about,
             }
             await session.execute(stmt, params)

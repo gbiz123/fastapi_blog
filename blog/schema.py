@@ -21,6 +21,8 @@ class User(BaseModel):
 
 class BlogConfig(BaseModel):
     """Blog configuration"""
-    banner_image_url: str
     homepage_heading: str
     homepage_subheading: str
+    navbar_title: str
+    about: str
+    banner_image_url: str

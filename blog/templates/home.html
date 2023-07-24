@@ -1,15 +1,16 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="banner container">
+<div class="banner container py-5">
     <h1 class="text-center">{{ blog_config.homepage_heading }}</h1>
-    <h2 class="text-center">{{ blog_config.homepage_subheading }}</h2>
-    <img class="img-fluid" src={{ blog_config.banner_image_url }} alt="">
+    <img class="img-fluid mx-auto d-block py-5" src={{ blog_config.banner_image_url }} alt="">
+    <h2 class="text-center pb-4">{{ blog_config.homepage_subheading }}</h2>
+    <p class="text-center mx-auto" style="max-width: 500px;">{{ blog_config.about }}</p>
 </div>
 <div class="homepage-posts container d-flex">
-    <div class="container">
+    <div class="container px-5">
     {% for post in posts %}
-        <div class="row card my-2">
+        <div class="row card my-4">
             <a href={{ request.url_for('blog_post_page', post_no=post.post_id) }}><h2>{{ post.title }}</h2></a>
             <p>{{ post.description }}</p>
             <p>

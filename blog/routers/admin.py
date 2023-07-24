@@ -100,27 +100,54 @@ async def update_post(
 
 
 @router.get("/update-blog-config")
-async def show_config_editor_page(request: Request):
+async def update_config_page(request: Request):
     """Update the blog config"""
+    if not request.session.get("user"):
+        request.session["message"] = "You must be logged in as an admin to update config."
+        return RedirectResponse("/", 303)
+
+    if not request.session["user"]["is_admin"]:
+        request.session["message"] = "You must be logged in as an admin to update config."
+        return RedirectResponse("/", 303)
+
     sessionmaker = await db.get_db_sessionmaker()
     blog_config = await db.fetch_blog_config(sessionmaker)
     context = {"request": request, "blog_config": blog_config}
-    return templates.TemplateResponse("edit_config.html", context)
+    return templates.TemplateResponse("update_config.html", context)
 
 
 @router.post("/update-blog-config")
 async def update_blog_config(
-        homepage_heading: str = Form(),
-        homepage_subheading: str = Form(),
-        banner_image_url: str = Form()
+        request: Request,
+        homepage_heading: str = Form(""),
+        homepage_subheading: str = Form(""),
+        banner_image_url: str = Form(""),
+        about: str = Form(""),
+        navbar_title: str = Form("")
     ):
     """Update the blog config"""
+    if not request.session.get("user"):
+        request.session["message"] = "You must be logged in as an admin to update config."
+        return RedirectResponse("/", 303)
+
+    if not request.session["user"]["is_admin"]:
+        request.session["message"] = "You must be logged in as an admin to update config."
+        return RedirectResponse("/", 303)
+
+    if not all([homepage_subheading, homepage_subheading, navbar_title, about, banner_image_url]):
+        request.session["message"] = "Please fill in all the required fields."    
+        return RedirectResponse("/admin/update-blog-config", status_code=303)
+
     blog_config = BlogConfig(banner_image_url=banner_image_url,
                              homepage_subheading=homepage_subheading,
-                             homepage_heading=homepage_heading)
+                             homepage_heading=homepage_heading,
+                             about=about,
+                             navbar_title=navbar_title)
     
     sessionmaker = await db.get_db_sessionmaker()
     await db.update_blog_config(sessionmaker, blog_config)
+    request.session["message"] = "Your blog config has been updated!"    
+    return RedirectResponse("/", status_code=303)
 
 
 @router.get("/create-user")
