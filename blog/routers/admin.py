@@ -2,6 +2,8 @@ from fastapi import Query, Request, Form, Path
 from fastapi.routing import APIRouter
 from fastapi.responses import RedirectResponse
 
+import bcrypt
+
 from typing import Annotated
 
 from ..schema import BlogConfig, Post
