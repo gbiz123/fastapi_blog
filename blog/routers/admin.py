@@ -6,6 +6,7 @@ import bcrypt
 
 from typing import Annotated
 
+from .. import schema
 from ..schema import BlogConfig, Post
 from ..templates import templates
 from .. import database as db
