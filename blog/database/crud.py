@@ -124,9 +124,9 @@ async def create_post(
     """
     stmt = text(
         "INSERT INTO posts "
-        "    (title, content, created_by_user_id, image_url) "
+        "    (title, content, description, created_by_user_id, image_url) "
         "VALUES "
-        "   (:title, :content, :created_by_user_id, :image_url)"
+        "   (:title, :content, :description, :created_by_user_id, :image_url)"
     )
     async with async_session() as session:
         async with session.begin():

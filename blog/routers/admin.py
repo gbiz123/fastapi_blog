@@ -2,8 +2,11 @@ from fastapi import Query, Request, Form, Path
 from fastapi.routing import APIRouter
 from fastapi.responses import RedirectResponse
 
+import bcrypt
+
 from typing import Annotated
 
+from .. import schema
 from ..schema import BlogConfig, Post
 from ..templates import templates
 from .. import database as db
@@ -37,7 +40,7 @@ async def create_post(
 
     if not all([image_url, content, title, description]):
         request.session["message"] = "Title, image URL, description, and content are required."    
-        return RedirectResponse("/create-post", status_code=303)
+        return RedirectResponse("/admin/create-post", status_code=303)
 
     user_id = user["user_id"]
 
