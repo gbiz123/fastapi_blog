@@ -1,3 +1,15 @@
+body {
+    font-family: Garamond;
+}
+
+.navbar {
+    background-color: #682860;
+}
+
+.navbar-brand {
+    color: #d1bea8;
+}
+
 .blog-post > p {
     font-size: 18px;
     line-height: 32px;
